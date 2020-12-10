@@ -34,19 +34,23 @@ After training any of the example notebooks, the outcomes will be saved in the r
 For any questions regarding the code and the paper refer to [Luis Armando Pérez Rey](mailto:l.a.perez.rey@tue.nl)
 
 ## Citation 
-[1] Perez Rey, L.A., Menkovski, V., Portegies, J.W. (2019). *Diffusion Variational Autoencoders*. 34th Conference on Uncertainty in Artificial Intelligence (UAI-18).
+[1] Perez Rey, L.A., Menkovski, V., Portegies, J.W. (2020). *Diffusion Variational Autoencoders*. Twenty-Ninth International Joint Conference on Artificial Intelligence.
 
 *BibTeX*
 ```
-@article{deltavae19,
-  title={Diffusion Variational Autoencoders},
-  author={Perez Rey, L.A. and
-          Menkovski, V. and
-          Portegies, J.W.},
-  journal={arXiv preprint},
-  archivePrefix = {arXiv},
-  eprint    = {1901.08991},
-  year={2019}
+@inproceedings{ijcai2020-375,
+  title     = {Diffusion Variational Autoencoders},
+  author    = {Perez Rey, Luis A. and Menkovski, Vlado and Portegies, Jim},
+  booktitle = {Proceedings of the Twenty-Ninth International Joint Conference on
+               Artificial Intelligence, {IJCAI-20}},
+  publisher = {International Joint Conferences on Artificial Intelligence Organization},
+  editor    = {Christian Bessiere},	
+  pages     = {2704--2710},
+  year      = {2020},
+  month     = {7},
+  note      = {Main track}
+  doi       = {10.24963/ijcai.2020/375},
+  url       = {https://doi.org/10.24963/ijcai.2020/375},
 }
 ```
 ## References
