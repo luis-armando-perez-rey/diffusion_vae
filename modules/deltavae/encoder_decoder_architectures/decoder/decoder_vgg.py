@@ -1,5 +1,5 @@
 from modules.deltavae.encoder_decoder_architectures.decoder import decoder_parent
-import keras.layers, keras.models
+
 import numpy as np
 import tensorflow as tf
 
@@ -31,31 +31,31 @@ class DecoderVGG(decoder_parent.Decoder):
                             "decoder_output_activation": decoder_output_activation}
     def _build_hidden_list(self):
         hidden_list = []
-        with tf.name_scope("DecoderVGGHidden") as scope:
+        with tf.compat.v1.name_scope("DecoderVGGHidden") as scope:
             # Dense layers
             for num_units, units in reversed(list(enumerate(self.dense_units_list))):
-                hidden_list.append(keras.layers.Dense(units, activation=None, name="h_dense_dec_" + str(num_units)))
-                hidden_list.append(keras.layers.BatchNormalization())
-                hidden_list.append(keras.layers.Activation('relu'))
+                hidden_list.append(tf.keras.layers.Dense(units, activation=None, name="h_dense_dec_" + str(num_units)))
+                hidden_list.append(tf.keras.layers.BatchNormalization())
+                hidden_list.append(tf.keras.layers.Activation('relu'))
 
-            hidden_list.append(keras.layers.Dense(np.product(self.intermediate_shape), activation=None))
-            hidden_list.append(keras.layers.Activation('relu'))
-            hidden_list.append(keras.layers.BatchNormalization())
-            hidden_list.append(keras.layers.Reshape(self.intermediate_shape))
+            hidden_list.append(tf.keras.layers.Dense(np.product(self.intermediate_shape), activation=None))
+            hidden_list.append(tf.keras.layers.Activation('relu'))
+            hidden_list.append(tf.keras.layers.BatchNormalization())
+            hidden_list.append(tf.keras.layers.Reshape(self.intermediate_shape))
 
             # Convolutional layers
             for num_kernel, kernel_size in reversed(list(enumerate(self.kernel_size_list[1:]))):
                 if not (self.pool_size_list[num_kernel] is None):
-                    hidden_list.append(keras.layers.UpSampling2D(size=self.pool_size_list[num_kernel]))
-                hidden_list.append(keras.layers.Conv2D(filters=self.filter_list[num_kernel - 1], kernel_size=kernel_size,
+                    hidden_list.append(tf.keras.layers.UpSampling2D(size=self.pool_size_list[num_kernel]))
+                hidden_list.append(tf.keras.layers.Conv2D(filters=self.filter_list[num_kernel - 1], kernel_size=kernel_size,
                                                   strides=(1, 1), padding="same",
                                                   activation=None))
-                hidden_list.append(keras.layers.BatchNormalization())
-                hidden_list.append(keras.layers.Activation('relu'))
+                hidden_list.append(tf.keras.layers.BatchNormalization())
+                hidden_list.append(tf.keras.layers.Activation('relu'))
 
             # if not (self.pool_size_list[0] is None):
             # TODO: FIX THIS!!
-            hidden_list.append(keras.layers.UpSampling2D(size=(2, 2)))
+            hidden_list.append(tf.keras.layers.UpSampling2D(size=(2, 2)))
 
         return hidden_list
 
@@ -63,13 +63,13 @@ class DecoderVGG(decoder_parent.Decoder):
 
 
     def _build_output(self, hidden):
-        x_recon = keras.layers.Conv2D(filters=self.input_shape[-1], kernel_size=self.kernel_size_list[0],
+        x_recon = tf.keras.layers.Conv2D(filters=self.input_shape[-1], kernel_size=self.kernel_size_list[0],
                                       strides=(1, 1), padding="same",
                                       activation=self.activation)(hidden)
         return x_recon
 
     def _build_decoder(self):
-        decoder = keras.models.Model(self.inputs, self.outputs, name="DecoderVGGModel")
+        decoder = tf.keras.models.Model(self.inputs, self.outputs, name="DecoderVGGModel")
         return decoder
 
 

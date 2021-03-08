@@ -1,4 +1,4 @@
-import keras.layers
+import tensorflow as tf
 
 
 class Decoder:
@@ -18,7 +18,7 @@ class Decoder:
 
 
     def _build_input(self, latent_dim):
-        self.inputs = keras.layers.Input(shape=(latent_dim,), name='decoder_input')
+        self.inputs = tf.keras.layers.Input(shape=(latent_dim,), name='decoder_input')
         return self.inputs
 
     def _build_hidden(self, inputs):

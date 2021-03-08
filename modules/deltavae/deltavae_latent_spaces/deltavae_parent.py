@@ -4,8 +4,7 @@ import time
 
 # Standard imports
 import tensorflow as tf
-import keras
-from keras import backend as K
+import tensorflow.keras.backend as K
 
 # Plotting libraries
 import numpy as np
@@ -52,7 +51,7 @@ class DiffusionVAE:
     def _build_encoder(self):
         """
         This function defines the encoder model and the corresponding output tensors of the encoder
-        :return: encoder: keras model
+        :return: encoder: tf.keras model
          z: tensor for sample latent variable
          z_mean_projected: location parameter of the posterior approximate on the manifold
          z_log_t: scale parameter of the posterior approximate
@@ -63,12 +62,12 @@ class DiffusionVAE:
         z_mean = self.encoder_class.outputs[0]
         z_log_t = self.encoder_class.outputs[1]
         # Project the location parameter
-        z_mean_projected = keras.layers.Lambda(self.projection, output_shape=(self.latent_dim,), name="z_projected")(
+        z_mean_projected = tf.keras.layers.Lambda(self.projection, output_shape=(self.latent_dim,), name="z_projected")(
             z_mean)
         # Tensor for the sample according to the prior
-        z = keras.layers.Lambda(self.sampling, output_shape=(self.latent_dim,), name='z')([z_mean_projected, z_log_t])
+        z = tf.keras.layers.Lambda(self.sampling, output_shape=(self.latent_dim,), name='z')([z_mean_projected, z_log_t])
         # Define the encoder model
-        encoder = keras.models.Model(self.encoder_class.inputs, [z_mean_projected, z_log_t, z])
+        encoder = tf.keras.models.Model(self.encoder_class.inputs, [z_mean_projected, z_log_t, z])
         return encoder, z, z_mean_projected, z_log_t
 
     def _build_decoder(self, z):
@@ -87,14 +86,14 @@ class DiffusionVAE:
                 z1, z2 = args
                 avg = 0.5 * (z1 + z2)
                 return avg
-            neg_z = keras.layers.Lambda(lambda s: -s)(self.decoder_class.inputs)
+            neg_z = tf.keras.layers.Lambda(lambda s: -s)(self.decoder_class.inputs)
             pos_output = self.decoder_class.outputs
             neg_hidden = self.decoder_class._build_hidden(neg_z)
             neg_output = self.decoder_class._build_output(neg_hidden)
-            outputs_vae = keras.layers.Lambda(average)([pos_output, neg_output])
-            decoder = keras.models.Model(self.decoder_class.inputs, outputs_vae, name = "Decoder"+self.decoder_class.type)
+            outputs_vae = tf.keras.layers.Lambda(average)([pos_output, neg_output])
+            decoder = tf.keras.models.Model(self.decoder_class.inputs, outputs_vae, name = "Decoder"+self.decoder_class.type)
         else:
-            decoder = keras.models.Model(self.decoder_class.inputs, self.decoder_class.outputs,
+            decoder = tf.keras.models.Model(self.decoder_class.inputs, self.decoder_class.outputs,
                                          name="Decoder" + self.decoder_class.type)
         outputs_vae = decoder(z)
         return decoder, outputs_vae
@@ -207,22 +206,22 @@ class DiffusionVAE:
             :return: r_loss tensor
             """
             if self.r_loss == "mse":
-                print("Reconstruction loss is mean squared error")
-                se = K.pow(outputs - inputs, 2)
+                #print("Reconstruction loss is mean squared error")
+                se = (outputs - tf.cast(inputs, tf.float32)) ** 2
                 # Sum over the data dimensions
                 for dimension in range(len(self.encoder_class.input_shape)):
                     se = K.sum(se, axis=-1)
-                loss = 0.5 * (se / self.var_x + np.product(self.encoder_class.input_shape) * np.log(
+                loss = 0.5 * (se / self.var_x + tf.cast(np.product(self.encoder_class.input_shape), tf.float32) * np.log(
                     2 * np.pi * self.var_x))
 
             elif self.r_loss == "binary":
-                print("Reconstruction loss is binary cross entropy")
+                #print("Reconstruction loss is binary cross entropy")
                 epsilon = K.epsilon()
-                loss = -inputs * tf.log(epsilon + outputs) \
-                       - (1 - inputs) * tf.log(epsilon + 1 - outputs)
+                loss = -tf.cast(inputs, tf.float32) * tf.math.log(epsilon + outputs) \
+                       - (1.0 - tf.cast(inputs, tf.float32)) * tf.math.log(epsilon + 1.0 - outputs)
                 # Sum over the data dimensions
                 for dimension in range(len(self.encoder_class.input_shape)):
-                    loss = tf.reduce_sum(loss, axis=-1)
+                    loss = tf.reduce_sum(input_tensor=loss, axis=-1)
             else:
                 print("Error, no reconstruction chosen")
                 loss = None
@@ -237,7 +236,7 @@ class DiffusionVAE:
             :param outputs:
             :return: r_loss tensor
             """
-            calculated_mse = keras.losses.mse(inputs, outputs)
+            calculated_mse = tf.keras.losses.mse(inputs, outputs)
             return calculated_mse
 
         metrics.append(mean_squared_error)
@@ -261,8 +260,8 @@ class DiffusionVAE:
         # Create metrics and loss
         metrics, vae_loss = self._build_loss_functions(z_log_t, z_mean_projected)
         # Create Delta-VAE model
-        vae = keras.models.Model(self.encoder_class.inputs, outputs, name='vae_mlp')
-        vae.compile(optimizer=self.optimizer, loss=[vae_loss], metrics=metrics)
+        vae = tf.keras.models.Model(self.encoder_class.inputs, outputs, name='vae_mlp')
+        vae.compile(optimizer=self.optimizer, loss=[vae_loss], metrics=metrics, experimental_run_tf_function=False)
         # Print summary of networks
         vae.summary()
         encoder.summary()
@@ -311,10 +310,10 @@ class DiffusionVAE:
         :param models_filepath (str) path to where the diffusion vae models are to be saved
         :return:
         """
-        checkpoint = keras.callbacks.ModelCheckpoint(models_filepath, verbose=0, save_best_only=False,
+        checkpoint = tf.keras.callbacks.ModelCheckpoint(models_filepath, verbose=0, save_best_only=False,
                                                      save_weights_only=True, mode='auto', period=10)
 
-        tensorboard_cb = keras.callbacks.TensorBoard(log_dir=tensorboard_file)
+        tensorboard_cb = tf.keras.callbacks.TensorBoard(log_dir=tensorboard_file)
         self.vae.fit(train_data, train_data,
                      epochs=epochs,
                      batch_size=batch_size,
@@ -332,7 +331,7 @@ class DiffusionVAE:
         :param tensorboard_file:
         :return:
         """
-        tensorboard_cb = keras.callbacks.TensorBoard(log_dir=tensorboard_file)
+        tensorboard_cb = tf.keras.callbacks.TensorBoard(log_dir=tensorboard_file)
         self.vae.fit_generator(generator,
                                epochs=epochs,
                                verbose=2,
@@ -434,10 +433,10 @@ class DiffusionVAE:
         #    log_q += -r ** 2 / (2 * (t))
 
         r = np.linalg.norm(z_samples - encoded[:, np.newaxis, :], axis=-1)
-        log_term1 = -0.5 * self.d * np.log(2 * np.pi * (t))
-        log_term2 = -r ** 2 / (2 * (t))
-        coefficient1 = self.S(z_samples) * t / (8 * self.d * (r) ** 2)
-        coefficient2 = 3 - self.d + (self.d - 1) * r ** 2 + (self.d - 3) * r / np.tan(r)
+        log_term1 = -0.5 * self.d * np.log(2.0 * np.pi * (t))
+        log_term2 = -r ** 2.0 / (2.0 * (t))
+        coefficient1 = self.S(z_samples) * t / (8.0 * self.d * (r) ** 2)
+        coefficient2 = 3 - self.d + (self.d - 1.0) * r ** 2.0 + (self.d - 3.0) * r / np.tan(r)
         log_term3 = np.log(1 + coefficient1 * coefficient2)
         log_q = log_term1 + log_term2 + log_term3
         return log_q

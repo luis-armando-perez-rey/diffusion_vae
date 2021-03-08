@@ -10,7 +10,7 @@ import os
 # Standard imports
 import numpy as np
 import tensorflow as tf
-import keras.backend as K
+import tensorflow.keras.backend as K
 
 # Plotting libraries
 import matplotlib.pyplot as plt
@@ -47,7 +47,7 @@ class StandardVAE(DiffusionVAE):
         super(StandardVAE, self).__init__(params, encoder_class, decoder_class)
 
     def kl_tensor(self, z_log_scale, z_mu):
-        loss = 0.5 * tf.reduce_sum(K.exp(z_log_scale) + K.square(z_mu) - z_log_scale - 1, axis=-1)
+        loss = 0.5 * tf.reduce_sum(input_tensor=K.exp(z_log_scale) + K.square(z_mu) - z_log_scale - 1, axis=-1)
         if self.params.controlled_capacity:
             self.C = tf.Variable(1.0)
             loss = tf.abs(loss - self.C)

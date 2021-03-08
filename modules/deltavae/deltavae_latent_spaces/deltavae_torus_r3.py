@@ -7,7 +7,7 @@ import os
 # Standard imports
 import numpy as np
 import tensorflow as tf
-import keras.backend as K
+import tensorflow.keras.backend as K
 import math
 import itertools
 
@@ -90,8 +90,8 @@ class DiffusionTorusR3(DiffusionVAE):
         c = 3.0  # radius to center of tube
         a = 0.6  # radius of tube
         proj_matrix = K.constant([[1, 0, 0], [0, 1, 0], [0, 0, 0]])
-        z_circle = c * tf.nn.l2_normalize(K.dot(z, proj_matrix), dim=-1)
-        z_proj = a * tf.nn.l2_normalize(z - z_circle, dim=-1) + z_circle
+        z_circle = c * tf.nn.l2_normalize(K.dot(z, proj_matrix), axis=-1)
+        z_proj = a * tf.nn.l2_normalize(z - z_circle, axis=-1) + z_circle
         return z_proj
 
     # # # # # # # # # #  PLOTTING  FUNCTIONS # # # # # # # # # #

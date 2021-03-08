@@ -8,7 +8,7 @@ import os
 # Standard imports
 import numpy as np
 import tensorflow as tf
-import keras.backend as K
+import tensorflow.keras.backend as K
 
 # Plotting libraries
 import matplotlib.pyplot as plt
@@ -31,8 +31,8 @@ def projection_O3(x):
     def grad(dy):
         S_reshaped = tf.reshape(S, [-1, 3, 1])
         S_tiled = tf.tile(S_reshaped, [1, 1, 3])
-        S_tiled_t = tf.transpose(S_tiled, perm=[0, 2, 1])
-        Q = 2 * tf.reciprocal(S_tiled + S_tiled_t)
+        S_tiled_t = tf.transpose(a=S_tiled, perm=[0, 2, 1])
+        Q = 2 * tf.math.reciprocal(S_tiled + S_tiled_t)
         first_parenthesis = tf.matmul(tf.matmul(U, dy, transpose_a=True), V) - tf.matmul(
             tf.matmul(V, dy, transpose_a=True, transpose_b=True), U)
         second_parenthesis = tf.math.multiply(Q, first_parenthesis)
@@ -94,7 +94,7 @@ class DiffusionSO3VAE(DiffusionVAE):
         z_reshaped = tf.reshape(z, [-1, 3, 3])
         z_O3 = projection_O3(z_reshaped)
         z_O3_reshaped = tf.reshape(z_O3, [-1, 9])
-        z_proj = tf.reshape(tf.matrix_determinant(z_O3), [-1, 1]) * z_O3_reshaped
+        z_proj = tf.reshape(tf.linalg.det(z_O3), [-1, 1]) * z_O3_reshaped
         return z_proj
 
     def encode_matrix(self, data, batch_size):

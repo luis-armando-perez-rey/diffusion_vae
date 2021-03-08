@@ -9,7 +9,7 @@ import os
 # Standard imports
 import numpy as np
 import tensorflow as tf
-import keras.backend as K
+import tensorflow.keras.backend as K
 import itertools
 from scipy import stats
 
@@ -71,8 +71,8 @@ class DiffusionFlatTorusVAE(DiffusionVAE):
         """
         proj_matrix1 = K.constant([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]])
         proj_matrix2 = K.constant([[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]])
-        z_proj1 = tf.nn.l2_normalize(K.dot(z, proj_matrix1), dim=-1)
-        z_proj2 = tf.nn.l2_normalize(K.dot(z, proj_matrix2), dim=-1)
+        z_proj1 = tf.nn.l2_normalize(K.dot(z, proj_matrix1), axis=-1)
+        z_proj2 = tf.nn.l2_normalize(K.dot(z, proj_matrix2), axis=-1)
         z_proj = z_proj1 + z_proj2
         return z_proj
 

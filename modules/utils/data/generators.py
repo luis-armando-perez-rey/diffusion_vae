@@ -6,11 +6,11 @@ Module with a class to create a generator for low-frequency images.
 import numpy as np
 import scipy.ndimage
 from modules.utils import dataset_creation
-import keras
+import tensorflow as tf
 import random
 
 
-class RotationGenerator(keras.utils.Sequence):
+class RotationGenerator(tf.keras.utils.Sequence):
     '''
     A class to create a generator of low-frequency images.
     '''

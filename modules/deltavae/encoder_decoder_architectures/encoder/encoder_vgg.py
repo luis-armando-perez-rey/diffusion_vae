@@ -1,6 +1,6 @@
 from modules.deltavae.encoder_decoder_architectures.encoder import encoder_parent
-import keras.layers
-import tensorflow as tf 
+import tensorflow as tf
+
 
 class EncoderVGG(encoder_parent.Encoder):
 
@@ -50,31 +50,31 @@ class EncoderVGG(encoder_parent.Encoder):
         return intermediate_shape
 
     def _build_latent_list(self):
-        with tf.name_scope("EncoderVGGHidden") as scope:
+        with tf.compat.v1.name_scope("EncoderVGGHidden") as scope:
             hidden_list = []
 
             # Loop through all the convolutions in the VGG
             for num_filter, filters in enumerate(self.filter_list):
-                hidden_list.append(keras.layers.Conv2D(filters=filters,
+                hidden_list.append(tf.keras.layers.Conv2D(filters=filters,
                                        kernel_size=self.kernel_size_list[num_filter],
                                        strides=(1, 1),
                                        padding="same",
                                        activation = None))
-                hidden_list.append(keras.layers.BatchNormalization())
-                hidden_list.append(keras.layers.Activation('relu'))
+                hidden_list.append(tf.keras.layers.BatchNormalization())
+                hidden_list.append(tf.keras.layers.Activation('relu'))
 
                 # Do max pooling in the corresponding case. If an element of pool size list is none then no max pooling is done
                 if not (self.pool_size_list[num_filter] is None):
-                    hidden_list.append(keras.layers.MaxPooling2D(pool_size= self.pool_size_list[num_filter], padding="same"))
+                    hidden_list.append(tf.keras.layers.MaxPooling2D(pool_size= self.pool_size_list[num_filter], padding="same"))
 
             # Dense layers after the convolutions
-            hidden_list.append(keras.layers.Flatten())
+            hidden_list.append(tf.keras.layers.Flatten())
             for num_units, units in enumerate(self.dense_units_list[:-1]):
-                hidden_list.append(keras.layers.Dense(units, activation=None))
-                hidden_list.append(keras.layers.BatchNormalization())
-                hidden_list.append(keras.layers.Activation('relu'))
-            hidden_list.append(keras.layers.Dense(self.dense_units_list[-1], activation=None))
-            hidden_list.append(keras.layers.Activation('relu'))
+                hidden_list.append(tf.keras.layers.Dense(units, activation=None))
+                hidden_list.append(tf.keras.layers.BatchNormalization())
+                hidden_list.append(tf.keras.layers.Activation('relu'))
+            hidden_list.append(tf.keras.layers.Dense(self.dense_units_list[-1], activation=None))
+            hidden_list.append(tf.keras.layers.Activation('relu'))
         return hidden_list
 
     #
@@ -98,26 +98,26 @@ class EncoderVGG(encoder_parent.Encoder):
     #
     #         # Loop through all the convolutions in the VGG
     #         for num_filter, filters in enumerate(self.filter_list):
-    #             hidden = keras.layers.Conv2D(filters=filters,
+    #             hidden = tf.keras.layers.Conv2D(filters=filters,
     #                                    kernel_size=self.kernel_size_list[num_filter],
     #                                    strides=(1, 1),
     #                                    padding="same",
     #                                    activation = None)(hidden)
-    #             hidden = keras.layers.BatchNormalization()(hidden)
-    #             hidden = keras.layers.Activation('relu')(hidden)
+    #             hidden = tf.keras.layers.BatchNormalization()(hidden)
+    #             hidden = tf.keras.layers.Activation('relu')(hidden)
     #
     #             # Do max pooling in the corresponding case. If an element of pool size list is none then no max pooling is done
     #             if not (self.pool_size_list[num_filter] is None):
-    #                 hidden = keras.layers.MaxPooling2D(pool_size= self.pool_size_list[num_filter], padding="same")(hidden)
+    #                 hidden = tf.keras.layers.MaxPooling2D(pool_size= self.pool_size_list[num_filter], padding="same")(hidden)
     #
     #         # Dense layers after the convolutions
-    #         hidden = keras.layers.Flatten()(hidden)
+    #         hidden = tf.keras.layers.Flatten()(hidden)
     #         for num_units, units in enumerate(self.dense_units_list[:-1]):
-    #             hidden = keras.layers.Dense(units, activation=None)(hidden)
-    #             hidden = keras.layers.BatchNormalization()(hidden)
-    #             hidden = keras.layers.Activation('relu')(hidden)
-    #         hidden = keras.layers.Dense(self.dense_units_list[-1], activation=None)(hidden)
-    #         hidden = keras.layers.Activation('relu')(hidden)
+    #             hidden = tf.keras.layers.Dense(units, activation=None)(hidden)
+    #             hidden = tf.keras.layers.BatchNormalization()(hidden)
+    #             hidden = tf.keras.layers.Activation('relu')(hidden)
+    #         hidden = tf.keras.layers.Dense(self.dense_units_list[-1], activation=None)(hidden)
+    #         hidden = tf.keras.layers.Activation('relu')(hidden)
     #     return hidden
 
 

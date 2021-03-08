@@ -1,5 +1,5 @@
 from modules.deltavae.encoder_decoder_architectures.decoder import decoder_parent
-import keras.layers, keras.models
+import tensorflow as tf
 import numpy as np
 import tensorflow as tf 
 
@@ -23,18 +23,18 @@ class DecoderDense(decoder_parent.Decoder):
                             "decoder_output_activation": decoder_output_activation}
 
     def _build_hidden_list(self):
-        with tf.name_scope("DecoderDenseHidden") as scope:
+        with tf.compat.v1.name_scope("DecoderDenseHidden") as scope:
             hidden_layer_list = []
             for num_neurons in reversed(self.dense_units_list):
-                hidden_layer_list.append(keras.layers.Dense(num_neurons, activation=None))
+                hidden_layer_list.append(tf.keras.layers.Dense(num_neurons, activation=None))
                 if self.batch_normalization:
-                    hidden_layer_list.append(keras.layers.BatchNormalization())
-                hidden_layer_list.append(keras.layers.Activation('relu'))
+                    hidden_layer_list.append(tf.keras.layers.BatchNormalization())
+                hidden_layer_list.append(tf.keras.layers.Activation('relu'))
         return hidden_layer_list
 
     def _build_output(self, hidden):
-        x_recon = keras.layers.Dense(np.product(self.input_shape), activation = self.activation)(hidden)
-        x_recon_reshaped = keras.layers.Reshape(self.input_shape)(x_recon)
+        x_recon = tf.keras.layers.Dense(np.product(self.input_shape), activation = self.activation)(hidden)
+        x_recon_reshaped = tf.keras.layers.Reshape(self.input_shape)(x_recon)
         return x_recon_reshaped
 
 

@@ -1,11 +1,11 @@
-import keras
+import tensorflow as tf
 import time
 import numpy as np
 import imageio
 import glob
 import os
 
-class LatentSpaceCallback(keras.callbacks.Callback):
+class LatentSpaceCallback(tf.keras.callbacks.Callback):
     def __init__(self, train_data, vae,save_folder, experiment_name, periodicity, batch_size):
         self.train_data = train_data
         self.vae = vae

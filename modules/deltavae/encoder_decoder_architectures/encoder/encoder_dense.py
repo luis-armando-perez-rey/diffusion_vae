@@ -1,5 +1,6 @@
 from modules.deltavae.encoder_decoder_architectures.encoder import encoder_parent
-import keras.layers
+import tensorflow as tf
+
 import tensorflow as tf
 
 
@@ -27,17 +28,17 @@ class EncoderDense(encoder_parent.Encoder):
                             "batch_normalization": batch_normalization
                             }
     def _build_hidden_list(self):
-        with tf.name_scope("EncoderDenseHidden") as scope:
+        with tf.compat.v1.name_scope("EncoderDenseHidden") as scope:
             hidden_list = []
             if len(self.input_shape) == 3:
-                hidden_list.append(keras.layers.Flatten())
+                hidden_list.append(tf.keras.layers.Flatten())
             # Loop through all the dense layers in the network
             for num_layer, num_neurons in enumerate(self.dense_units_list):
-                hidden_list.append(keras.layers.Dense(num_neurons, activation=None))
+                hidden_list.append(tf.keras.layers.Dense(num_neurons, activation=None))
                 # Add batch normalization
                 if self.batch_normalization:
-                    hidden_list.append(keras.layers.BatchNormalization())
-                hidden_list.append(keras.layers.Activation('relu'))
+                    hidden_list.append(tf.keras.layers.BatchNormalization())
+                hidden_list.append(tf.keras.layers.Activation('relu'))
         return hidden_list
 
     # def _build_hidden(self):
@@ -49,14 +50,14 @@ class EncoderDense(encoder_parent.Encoder):
     #     with tf.name_scope("EncoderDenseHidden") as scope:
     #         hidden = self.inputs
     #         if len(self.input_shape) == 3:
-    #             hidden = keras.layers.Flatten()(hidden)
+    #             hidden = tf.keras.layers.Flatten()(hidden)
     #         # Loop through all the dense layers in the network
     #         for num_layer, num_neurons in enumerate(self.dense_units_list):
-    #             hidden = keras.layers.Dense(num_neurons, activation=None)(hidden)
+    #             hidden = tf.keras.layers.Dense(num_neurons, activation=None)(hidden)
     #             # Add batch normalization
     #             if self.batch_normalization:
-    #                 hidden = keras.layers.BatchNormalization()(hidden)
-    #             hidden = keras.layers.Activation('relu')(hidden)
+    #                 hidden = tf.keras.layers.BatchNormalization()(hidden)
+    #             hidden = tf.keras.layers.Activation('relu')(hidden)
     #     return hidden
 
 

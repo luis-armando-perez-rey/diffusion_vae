@@ -7,7 +7,6 @@ import os
 import time
 import pandas as pd
 import numpy as np
-import keras
 import json
 import tensorflow as tf
 from modules.utils.visualization import plot_utils
@@ -137,10 +136,10 @@ class Experiment(object):
         print(tensorboard_file)
 
 
-        terminate_nan = keras.callbacks.TerminateOnNaN()
+        terminate_nan = tf.keras.callbacks.TerminateOnNaN()
         callbacks_list = [terminate_nan]
         if tensorboard:
-            tensorboard_cb = keras.callbacks.TensorBoard(log_dir=tensorboard_file)
+            tensorboard_cb = tf.keras.callbacks.TensorBoard(log_dir=tensorboard_file)
             callbacks_list.append(tensorboard_cb)
 
         self.diffusionVAE.fit([self.train_data[0], self.train_data[1]],
@@ -182,11 +181,11 @@ class Experiment(object):
         print(tensorboard_file)
 
 
-        terminate_nan = keras.callbacks.TerminateOnNaN()
-        early_stop_cb = keras.callbacks.EarlyStopping(monitor=monitor, patience=patience, restore_best_weights=True, mode= 'min')
+        terminate_nan = tf.keras.callbacks.TerminateOnNaN()
+        early_stop_cb = tf.keras.callbacks.EarlyStopping(monitor=monitor, patience=patience, restore_best_weights=True, mode= 'min')
         callbacks_list = [terminate_nan, early_stop_cb]
         if tensorboard:
-            tensorboard_cb = keras.callbacks.TensorBoard(log_dir=tensorboard_file)
+            tensorboard_cb = tf.keras.callbacks.TensorBoard(log_dir=tensorboard_file)
             callbacks_list.append(tensorboard_cb)
 
         self.diffusionVAE.fit([self.train_data[0], self.train_data[1]],
@@ -231,11 +230,11 @@ class Experiment(object):
         print(tensorboard_file)
 
 
-        terminate_nan = keras.callbacks.TerminateOnNaN()
-        early_stop_cb = keras.callbacks.EarlyStopping(monitor=monitor, patience=patience, restore_best_weights=True, mode= 'min')
+        terminate_nan = tf.keras.callbacks.TerminateOnNaN()
+        early_stop_cb = tf.keras.callbacks.EarlyStopping(monitor=monitor, patience=patience, restore_best_weights=True, mode= 'min')
         callbacks_list = [terminate_nan, early_stop_cb]
         if tensorboard:
-            tensorboard_cb = keras.callbacks.TensorBoard(log_dir=tensorboard_file)
+            tensorboard_cb = tf.keras.callbacks.TensorBoard(log_dir=tensorboard_file)
             callbacks_list.append(tensorboard_cb)
 
         self.diffusionVAE.fit([self.train_data[0], self.train_data[1], self.train_data[2]],
@@ -278,11 +277,11 @@ class Experiment(object):
         print(tensorboard_file)
 
 
-        terminate_nan = keras.callbacks.TerminateOnNaN()
-        early_stop_cb = keras.callbacks.EarlyStopping(monitor=monitor, patience=patience, restore_best_weights=True, mode= 'min')
+        terminate_nan = tf.keras.callbacks.TerminateOnNaN()
+        early_stop_cb = tf.keras.callbacks.EarlyStopping(monitor=monitor, patience=patience, restore_best_weights=True, mode= 'min')
         callbacks_list = [terminate_nan, early_stop_cb]
         if tensorboard:
-            tensorboard_cb = keras.callbacks.TensorBoard(log_dir=tensorboard_file)
+            tensorboard_cb = tf.keras.callbacks.TensorBoard(log_dir=tensorboard_file)
             callbacks_list.append(tensorboard_cb)
 
         self.diffusionVAE.fit([self.train_data[0], self.train_data[1]],
@@ -324,10 +323,10 @@ class Experiment(object):
         print(tensorboard_file)
 
 
-        terminate_nan = keras.callbacks.TerminateOnNaN()
+        terminate_nan = tf.keras.callbacks.TerminateOnNaN()
         callbacks_list = [terminate_nan]
         if tensorboard:
-            tensorboard_cb = keras.callbacks.TensorBoard(log_dir=tensorboard_file)
+            tensorboard_cb = tf.keras.callbacks.TensorBoard(log_dir=tensorboard_file)
             callbacks_list.append(tensorboard_cb)
 
         self.diffusionVAE.fit([self.train_data[0], self.train_data[1], self.train_data[2]],
@@ -369,11 +368,11 @@ class Experiment(object):
 
 
 
-        terminate_nan = keras.callbacks.TerminateOnNaN()
-        early_stop_cb = keras.callbacks.EarlyStopping(monitor=monitor, patience=patience, restore_best_weights=True, mode= 'min')
+        terminate_nan = tf.keras.callbacks.TerminateOnNaN()
+        early_stop_cb = tf.keras.callbacks.EarlyStopping(monitor=monitor, patience=patience, restore_best_weights=True, mode= 'min')
         callbacks_list = [terminate_nan, early_stop_cb]
         if tensorboard:
-            tensorboard_cb = keras.callbacks.TensorBoard(log_dir=tensorboard_file)
+            tensorboard_cb = tf.keras.callbacks.TensorBoard(log_dir=tensorboard_file)
             callbacks_list.append(tensorboard_cb)
 
         self.diffusionVAE.fit([self.train_data[0], self.train_data[1], self.train_data[2]],
@@ -418,11 +417,11 @@ class Experiment(object):
 
 
 
-        terminate_nan = keras.callbacks.TerminateOnNaN()
-        early_stop_cb = keras.callbacks.EarlyStopping(monitor=monitor, patience=patience, restore_best_weights=True, mode= 'min')
+        terminate_nan = tf.keras.callbacks.TerminateOnNaN()
+        early_stop_cb = tf.keras.callbacks.EarlyStopping(monitor=monitor, patience=patience, restore_best_weights=True, mode= 'min')
         callbacks_list = [terminate_nan, early_stop_cb]
         if tensorboard:
-            tensorboard_cb = keras.callbacks.TensorBoard(log_dir=tensorboard_file)
+            tensorboard_cb = tf.keras.callbacks.TensorBoard(log_dir=tensorboard_file)
             callbacks_list.append(tensorboard_cb)
 
         self.diffusionVAE.fit([self.train_data[0]],
@@ -586,10 +585,10 @@ class Experiment(object):
 
 
         if tensorboard:
-            tensorboard_cb = keras.callbacks.TensorBoard(log_dir=tensorboard_file)
+            tensorboard_cb = tf.keras.callbacks.TensorBoard(log_dir=tensorboard_file)
             callbacks_list.append(tensorboard_cb)
         if self.diffusionVAE.params.controlled_capacity:
-            callbacks_list.append(CapacityCallback(self.diffusionVAE.params.min_capacity, self.diffusionVAE.params.max_capacity, self.experiment_params.epochs, self.diffusionVAE.C))
+            callbacks_list.append(CapacityCallback(self.diffusionVAE.params.min_capacity, self.diffusionVAE.params.max_capacity, self.experiment_params.epochs))
 
 
         self.diffusionVAE.vae.fit(self.train_data, self.target_data,

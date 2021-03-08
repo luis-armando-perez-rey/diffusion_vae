@@ -8,7 +8,7 @@ import os
 # Standard imports
 import numpy as np
 import tensorflow as tf
-import keras.backend as K
+import tensorflow.keras.backend as K
 import math
 from scipy import stats
 import itertools
@@ -76,7 +76,7 @@ class DiffusionSphereVAE(DiffusionVAE):
         :param z: Input latent variable in R^latent_dim
         :return: Projected latent variable in manifold
         """
-        z_proj = tf.nn.l2_normalize(z, dim=-1)
+        z_proj = tf.nn.l2_normalize(z, axis=-1)
         return z_proj
 
     # # # # # # # # # #  PLOTTING  FUNCTIONS # # # # # # # # # #

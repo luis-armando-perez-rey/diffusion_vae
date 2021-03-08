@@ -1,4 +1,4 @@
-import keras.layers
+import tensorflow as tf
 import numpy as np
 
 
@@ -22,7 +22,7 @@ class Encoder():
 
 
     def _build_input(self):
-        inputs = keras.layers.Input(shape=self.input_shape, name='encoder_input')
+        inputs = tf.keras.layers.Input(shape=self.input_shape, name='encoder_input')
         return inputs
 
     def _build_hidden(self, inputs):
@@ -41,18 +41,18 @@ class Encoder():
 
     def _build_output(self, latent_dim, scale_dim, hidden):
         # Location parameter
-        z_mean = keras.layers.Dense(latent_dim, name='z_mean')(hidden)
+        z_mean = tf.keras.layers.Dense(latent_dim, name='z_mean')(hidden)
 
         # Scale parameter
         if self.unconstrained_t:
             print("Unconstrained time")
-            z_log_t = keras.layers.Dense(scale_dim, name="z_log_var")(hidden)
+            z_log_t = tf.keras.layers.Dense(scale_dim, name="z_log_var")(hidden)
         else:
             print("Log time between {} and {}".format(self.min_log_t, self.max_log_t))
-            z_log_var_pre = keras.layers.Dense(scale_dim, name="z_log_var", activation='tanh')(hidden)
+            z_log_var_pre = tf.keras.layers.Dense(scale_dim, name="z_log_var", activation='tanh')(hidden)
             half_time_interval_length = (self.max_log_t - self.min_log_t) / 2
             time_interval_center = (self.max_log_t + self.min_log_t) / 2
-            z_log_t = keras.layers.Lambda(lambda x: np.abs(half_time_interval_length) * x + time_interval_center,
+            z_log_t = tf.keras.layers.Lambda(lambda x: tf.math.abs(half_time_interval_length) * x + time_interval_center,
                                           name="z_log_var_restricted")(z_log_var_pre)
         return [z_mean, z_log_t]
 
