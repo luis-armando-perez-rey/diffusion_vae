@@ -12,6 +12,8 @@ This repository contains the code for the [Diffusion Variational Autoencoders](h
 - imageio
 - scipy
 
+### UPDATE:
+Branch tf2_migration can be run with tensorflow 1.15 which has TF1 compatible behavior and features from TF2.
 
 
 
